@@ -1,0 +1,18 @@
+{
+  "recipes": {
+    "scrambled eggs": {
+      "products": [
+        {
+          "egg": 4
+        },
+        {
+          "butter": 10
+        },
+        {
+          "wholemeal brea": 100
+        }
+      ],
+      "procedure": "1. Do sth\n 2. Do sth else"
+    }
+  }
+}
