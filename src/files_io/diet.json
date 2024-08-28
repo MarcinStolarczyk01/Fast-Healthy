@@ -1,0 +1,60 @@
+{
+  "diet": [
+    {
+      "monday": [
+        "first meal name",
+        "second meal name",
+        "third meal name",
+        "fourth meal name"
+      ]
+    },
+    {
+      "tuesday": [
+        "first meal name",
+        "second meal name",
+        "third meal name",
+        "fourth meal name"
+      ]
+    },
+    {
+      "wednesday": [
+        "first meal name",
+        "second meal name",
+        "third meal name",
+        "fourth meal name"
+      ]
+    },
+    {
+      "thursday": [
+        "first meal name",
+        "second meal name",
+        "third meal name",
+        "fourth meal name"
+      ]
+    },
+    {
+      "friday": [
+        "first meal name",
+        "second meal name",
+        "third meal name",
+        "fourth meal name"
+      ]
+    },
+    {
+      "saturday": [
+        "first meal name",
+        "second meal name",
+        "third meal name",
+        "fourth meal name"
+      ]
+    },
+    {
+      "sunday": [
+        "first meal name",
+        "second meal name",
+        "third meal name",
+        "fourth meal name"
+      ]
+    }
+  ]
+}

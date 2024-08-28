@@ -3,7 +3,6 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True, init=False)
 class MacroKeywords:
-    macro = "macro"
     fat = "fat"
     protein = "protein"
     carbohydrates = "carbohydrates"
@@ -12,9 +11,9 @@ class MacroKeywords:
 @dataclass(frozen=True, init=False)
 class ProductsKeywords:
     products = "products"
-    egg = "egg"
-    wholemeal_bread = "wholemeal bread"
-    butter = "butter"
+    name = "name"
+    macro = "macro"
+    unit = "unit"
 
 
 @dataclass(frozen=True, init=False)
@@ -22,3 +21,10 @@ class UnitKeywords:
     g = "g"
     pieces = "pieces"
     ml = "ml"
+
+
+@dataclass(frozen=True, init=False)
+class RecipeKeywords:
+    name = "name"
+    products = "products"
+    procedure = "procedure"
