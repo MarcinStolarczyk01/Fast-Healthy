@@ -8,11 +8,15 @@ def load_products(products: list[dict]) -> list[Product]:
     known_products: list[Product] = []
     for product in products:
         macro_section: dict = product[ProductsKeywords.macro]
-        known_products.append(Product(name=product[ProductsKeywords.name],
-                                      unit=product[ProductsKeywords.unit],
-                                      fat=macro_section[MacroKeywords.fat],
-                                      protein=macro_section[MacroKeywords.protein],
-                                      carbohydrates=macro_section[MacroKeywords.carbohydrates]))
+        known_products.append(
+            Product(
+                name=product[ProductsKeywords.name],
+                unit=product[ProductsKeywords.unit],
+                fat=macro_section[MacroKeywords.fat],
+                protein=macro_section[MacroKeywords.protein],
+                carbohydrates=macro_section[MacroKeywords.carbohydrates],
+            )
+        )
 
     return known_products
 
@@ -21,9 +25,12 @@ def load_recipes(recipes: dict) -> list[Recipe]:
     if not recipes:
         logging.debug("Can't load recipes from empty dictionary!")
     known_recipes: list[Recipe] = [
-        Recipe(name=recipe[RecipeKeywords.name],
-               procedure=recipe[RecipeKeywords.procedure],
-               products=recipe[RecipeKeywords.products]) for recipe in recipes
+        Recipe(
+            name=recipe[RecipeKeywords.name],
+            procedure=recipe[RecipeKeywords.procedure],
+            products=recipe[RecipeKeywords.products],
+        )
+        for recipe in recipes
     ]
 
     return known_recipes
