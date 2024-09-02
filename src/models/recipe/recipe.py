@@ -1,4 +1,3 @@
-from product.product import Product
 from dataclasses import dataclass
 
 

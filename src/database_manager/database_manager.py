@@ -1,10 +1,12 @@
 from keywords.keywords import RecipeKeywords, ProductsKeywords, MacroKeywords
-from product.product import Product
-from recipe.recipe import Recipe
+from models.product.product import Product
+from models.recipe.recipe import Recipe
 import logging
 
+from models.types import types
 
-def load_products(products: list[dict]) -> list[Product]:
+
+def load_products(products: types.Products) -> list[Product]:
     known_products: list[Product] = []
     for product in products:
         macro_section: dict = product[ProductsKeywords.macro]
@@ -21,7 +23,7 @@ def load_products(products: list[dict]) -> list[Product]:
     return known_products
 
 
-def load_recipes(recipes: dict) -> list[Recipe]:
+def load_recipes(recipes: list[dict]) -> list[Recipe]:
     if not recipes:
         logging.debug("Can't load recipes from empty dictionary!")
     known_recipes: list[Recipe] = [
@@ -37,7 +39,7 @@ def load_recipes(recipes: dict) -> list[Recipe]:
 
 
 class DataBaseManager:
-    def __init__(self, recipes_database: dict, products_database: dict):
+    def __init__(self, recipes_database: list[dict], products_database: list[dict]):
         self.known_products: list[Product] = load_products(products_database)
         self.known_recipes: list[Recipe] = load_recipes(recipes_database)
 
@@ -45,5 +47,7 @@ class DataBaseManager:
         for product in self.known_products:
             if product.name == name:
                 return product
-        logging.warning(f"Product {name} not present in database. \
-        Add product information to enable using it in your recipes!")
+        logging.warning(
+            f"Product {name} not present in database. \
+        Add product information to enable using it in your recipes!"
+        )
