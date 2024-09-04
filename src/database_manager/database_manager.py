@@ -3,20 +3,19 @@ from models.product.product import Product
 from models.recipe.recipe import Recipe
 import logging
 
-from models.types import types
+from models.types.types import ProductsDBType
 
 
-def load_products(products: types.Products) -> list[Product]:
+def load_products(products_db: ProductsDBType) -> list[Product]:
     known_products: list[Product] = []
-    for product in products:
-        macro_section: dict = product[ProductsKeywords.macro]
+    for product in products_db.products:
         known_products.append(
             Product(
-                name=product[ProductsKeywords.name],
-                unit=product[ProductsKeywords.unit],
-                fat=macro_section[MacroKeywords.fat],
-                protein=macro_section[MacroKeywords.protein],
-                carbohydrates=macro_section[MacroKeywords.carbohydrates],
+                name=product.name,
+                unit=product.unit,
+                fat=product.macro.fat,
+                protein=product.macro.protein,
+                carbohydrates=product.macro.carbohydrates,
             )
         )
 

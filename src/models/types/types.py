@@ -1,43 +1,36 @@
-from typing import Optional
+from typing import Literal
 
-from pydantic import BaseModel, RootModel
+from pydantic import BaseModel
 
 
 # +------------------+
-# |=====Products=====|
+#  =====Products=====
 # +------------------+
-class ProductMacro(BaseModel):
+class ProductMacroType(BaseModel):
     fat: float
     protein: float
     carbohydrates: float
 
 
-class Product(BaseModel):
+class ProductType(BaseModel):
     name: str
-    macro: Optional[ProductMacro]
-    unit: str
+    macro: ProductMacroType
+    unit: Literal['g', 'pieces', 'ml', 'l']
 
 
-class Products(RootModel):
-    root: list[Product]
+class ProductsDBType(BaseModel):
+    products: list[ProductType]
 
 
 # +-----------------+
-# |=====Recipes=====|
+#  =====Recipes=====
 # +-----------------+
-class RecipeProducts(RootModel):
-    root: dict[str, float]
 
-
-class RecipeProcedure(RootModel):
-    root: list[str]
-
-
-class Recipe(BaseModel):
+class RecipeType(BaseModel):
     name: str
-    products: RecipeProducts
-    procedure: RecipeProcedure
+    products: dict[str, float]
+    procedure: list[str]
 
 
-class Recipes(BaseModel):
-    recipes: list[Recipe]
+class RecipesDBType(BaseModel):
+    recipes: list[RecipeType]
