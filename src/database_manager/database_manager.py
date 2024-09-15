@@ -3,7 +3,7 @@ from models.product.product import Product
 from models.recipe.recipe import Recipe
 import logging
 
-from models.types.types import ProductsDBType
+from models.types.types import ProductsDBType, RecipesDBType
 
 
 def load_products(products_db: ProductsDBType) -> list[Product]:
@@ -22,9 +22,7 @@ def load_products(products_db: ProductsDBType) -> list[Product]:
     return known_products
 
 
-def load_recipes(recipes: list[dict]) -> list[Recipe]:
-    if not recipes:
-        logging.debug("Can't load recipes from empty dictionary!")
+def load_recipes(recipes: RecipesDBType) -> list[Recipe]:
     known_recipes: list[Recipe] = [
         Recipe(
             name=recipe[RecipeKeywords.name],
@@ -38,7 +36,7 @@ def load_recipes(recipes: list[dict]) -> list[Recipe]:
 
 
 class DataBaseManager:
-    def __init__(self, recipes_database: list[dict], products_database: list[dict]):
+    def __init__(self, recipes_database: RecipesDBType, products_database: ProductsDBType):
         self.known_products: list[Product] = load_products(products_database)
         self.known_recipes: list[Recipe] = load_recipes(recipes_database)
 

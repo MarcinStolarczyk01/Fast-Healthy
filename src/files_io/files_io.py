@@ -1,4 +1,3 @@
-# TODO: files IO toolbox
 import json
 from pathlib import Path
 
@@ -9,7 +8,3 @@ def open_json(file_path: str | Path) -> dict:
         return json.load(open(file_path))
     else:
         raise FileNotFoundError(f"Couldn't find a json file: {file_path}")
-
-
-def validate_json_against_schema():
-    raise NotImplementedError()
