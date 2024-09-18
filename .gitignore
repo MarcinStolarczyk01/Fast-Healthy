@@ -2,3 +2,6 @@
 /venv/*
 /.idea
 /tests/test_files
+*/__pycache__/
+
+
