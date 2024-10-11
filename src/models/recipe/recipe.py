@@ -5,4 +5,4 @@ from dataclasses import dataclass
 class Recipe:
     name: str
     procedure: list[str]
-    products: dict[str:float]
+    products: dict[tuple[str, float]]
