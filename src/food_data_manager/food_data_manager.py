@@ -1,16 +1,24 @@
+import logging
 import os
+import time
+
 import requests
-from exceptions.exceptions import MissingAPIKeyError, MissingNutrientError
+from requests import RequestException
+
+from exceptions.exceptions import MissingAPIKeyError, MissingNutrientError, FoodDatabaseConnectionError
 from models.product.product import Product
 from enum import Enum
 
 API_KEY_NAME = 'FD_CENTRAL_API_KEY'
+RETRIES = 5
+TIMEOUT = 30
+RETRY_PAUSE = 5
 
 
 class WantedNutrientIDs(Enum):
-    PROTEIN = 1003
-    FAT = 1085
-    CARBOHYDRATES_ID = 1005
+    protein = 1003
+    fat = 1085
+    carbohydrates = 1005
 
 
 class FoodDataManager:
@@ -24,14 +32,28 @@ class FoodDataManager:
     def _search_product(self, name: str, data_type: str = 'Foundation,SR%20Legacy', limit: int = 1) -> Product:
         request_url = f"{self.api_endpoint}?query={name}&dataType={data_type}&pageSize={limit}&api_key={self.database_api_key}"
 
-        search_results = requests.get(request_url).json()
+        fails = 0
+        while True:
+            try:
+                search_results = requests.get(request_url, timeout=TIMEOUT).json()
+                break
+            except RequestException as e:
+                fails += 1
+                if fails == RETRIES:
+                    raise FoodDatabaseConnectionError(
+                        f'Can not establish connection with usda food database {self.api_endpoint}. More info about the error: {e}')
+
+                for sec in reversed(range(1, RETRY_PAUSE + 1)):
+                    logging.info(f"Retrying database request in {sec} sec...")
+                    time.sleep(1)
 
         foods_section = search_results['foods']
-        name = foods_section['description']
-        nutrients_section: list[dict] = foods_section['foodNutrients']
+        food = foods_section[0]
+        found_product_name = food['description']
+        nutrients_section: list[dict] = food['foodNutrients']
         nutrients = {nutrient.name: self._find_nutrient_value(nutrient.value, nutrients_section) for nutrient in
                      WantedNutrientIDs}
-        return Product(name, nutrients)
+        return Product(found_product_name, nutrients=nutrients)
 
     @staticmethod
     def _find_nutrient_value(nut_id: int, nutrients: list[dict]) -> float:
@@ -42,9 +64,9 @@ class FoodDataManager:
         raise MissingNutrientError(f"Nutrient under id: {nut_id} not present in search results")
 
     @staticmethod
-    def _get_api_key(variable_name: str) -> str:
+    def _get_api_key(variable: str) -> str:
         try:
-            return os.environ[variable_name]
+            return os.environ[variable]
         except KeyError:
-            raise MissingAPIKeyError(f"Can't find environmental variable under the name: {variable_name}. \n\
+            raise MissingAPIKeyError(f"Can't find environmental variable under the name: {variable}. \n\
                                        Can't query products from the database.")
