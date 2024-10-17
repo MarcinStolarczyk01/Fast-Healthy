@@ -7,15 +7,18 @@ class IncompleteProductInfoError(Exception):
         self.message = message
         super().__init__(self.message)
 
+
 class MissingAPIKeyError(Exception):
     def __init__(self, message: str):
         self.message = message
         super().__init__(self.message)
 
+
 class MissingNutrientError(Exception):
     def __init__(self, message: str):
         self.message = message
         super().__init__(self.message)
+
 
 class FoodDatabaseConnectionError(Exception):
     def __init__(self, message: str):

@@ -15,7 +15,7 @@ class ProductMacroType(BaseModel):
 class ProductType(BaseModel):
     name: str
     macro: ProductMacroType
-    unit: Literal['g', 'pieces', 'ml', 'l']
+    unit: Literal["g", "pieces", "ml", "l"]
 
 
 class ProductsDBType(BaseModel):
@@ -25,6 +25,7 @@ class ProductsDBType(BaseModel):
 # +-----------------+
 #  =====Recipes=====
 # +-----------------+
+
 
 class RecipeType(BaseModel):
     name: str
