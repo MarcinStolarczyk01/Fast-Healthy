@@ -6,12 +6,12 @@ from pydantic import BaseModel
 from requests import RequestException
 from enum import Enum
 
-from exceptions.exceptions import (
+from src.exceptions.exceptions import (
     MissingAPIKeyError,
     MissingNutrientError,
     FoodDatabaseConnectionError,
 )
-from models.product.product import Product
+from src.models.product.product import Product
 
 
 API_KEY_NAME = "FD_CENTRAL_API_KEY"
