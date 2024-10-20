@@ -8,9 +8,8 @@ CARBOHYDRATES_KCAL = 4
 @dataclass
 class Product:
     name: str
-    nutrients: dict = field(init=False)
+    nutrients: dict[str, float]
 
-    def __init__(self, name: str, nutrients: dict):
-        self.name = name
-        for nutrient_name, value in nutrients.items():
-            setattr(self, nutrient_name, value)
+    def __post_init__(self):
+        for nutrient, value in self.nutrients.items():
+            setattr(self, nutrient, value)
