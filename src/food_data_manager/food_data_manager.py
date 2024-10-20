@@ -22,7 +22,7 @@ RETRY_PAUSE = 5
 
 class WantedNutrientIDs(Enum):
     protein = 1003
-    fat = 1085
+    fat = 1004
     carbohydrates = 1005
 
 
@@ -45,7 +45,7 @@ class FoodDataManager:
         self.database_api_key = self._get_api_key(API_KEY_NAME)
         self.api_endpoint = "https://api.nal.usda.gov/fdc/v1/foods/search"
 
-    def products(self, products_names: list[str]) -> tuple[Product, ...]:
+    def products(self, products_names: tuple[str]) -> tuple[Product, ...]:
         return tuple(self._search_product(name) for name in products_names)
 
     def _search_product(
