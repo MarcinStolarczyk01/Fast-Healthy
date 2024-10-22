@@ -14,12 +14,6 @@ from src.exceptions.exceptions import (
 from src.models.product.product import Product
 
 
-API_KEY_NAME = "FD_CENTRAL_API_KEY"
-RETRIES = 5
-TIMEOUT = 30
-RETRY_PAUSE = 5
-
-
 class WantedNutrientIDs(Enum):
     protein = 1003
     fat = 1004
@@ -41,34 +35,39 @@ class ResponseModel(BaseModel):
 
 
 class FoodDataManager:
+    API_KEY_NAME = "FD_CENTRAL_API_KEY"
+    RETRIES = 5
+    TIMEOUT = 30
+    RETRY_PAUSE = 5
+
     def __init__(self):
-        self.database_api_key = self._get_api_key(API_KEY_NAME)
+        self.database_api_key = self._get_api_key(self.API_KEY_NAME)
         self.api_endpoint = "https://api.nal.usda.gov/fdc/v1/foods/search"
 
     def products(self, products_names: tuple[str]) -> tuple[Product, ...]:
         return tuple(self._search_product(name) for name in products_names)
 
     def _search_product(
-        self, name: str, data_type: str = "Foundation,SR%20Legacy", limit: int = 1
+            self, name: str, data_type: str = "Foundation,SR%20Legacy", limit: int = 1
     ) -> Product:
         request_url = f"{self.api_endpoint}?query={name}&dataType={data_type}&pageSize={limit}&api_key={self.database_api_key}"
 
         fails = 0
         while True:
             try:
-                response = requests.get(request_url, timeout=TIMEOUT)
+                response = requests.get(request_url, timeout=self.TIMEOUT)
                 response.raise_for_status()
                 search_results = response.json()
                 break
             except RequestException as e:
                 fails += 1
-                if fails == RETRIES:
+                if fails == self.RETRIES:
                     raise FoodDatabaseConnectionError(
                         f"Cannot establish connection with USDA food database at {self.api_endpoint}. "
                         f"More info about the error: {e}"
                     )
-                logging.info(f"Retrying database request in {RETRY_PAUSE} sec...")
-                time.sleep(RETRY_PAUSE)
+                logging.info(f"Retrying database request in {self.RETRY_PAUSE} sec...")
+                time.sleep(self.RETRY_PAUSE)
 
         search_results = ResponseModel(**search_results)
 
