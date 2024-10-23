@@ -1,4 +1,4 @@
-from files_io.files_io import open_json
+from src.files_io.files_io import open_json
 import pytest
 from pathlib import Path
 import json

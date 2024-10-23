@@ -48,7 +48,7 @@ class FoodDataManager:
         return tuple(self._search_product(name) for name in products_names)
 
     def _search_product(
-            self, name: str, data_type: str = "Foundation,SR%20Legacy", limit: int = 1
+        self, name: str, data_type: str = "Foundation,SR%20Legacy", limit: int = 1
     ) -> Product:
         request_url = f"{self.api_endpoint}?query={name}&dataType={data_type}&pageSize={limit}&api_key={self.database_api_key}"
 
