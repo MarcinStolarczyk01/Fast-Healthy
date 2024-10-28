@@ -60,5 +60,8 @@ class Dietitian:
         self._macros_ratio = macros_content
         return self
 
+    def add_recipe(self, ) -> None:
+        raise NotImplementedError
+
     def get_diet(self) -> None:  # pd.DataFrame:
-        raise NotImplementedError()
+        raise NotImplementedError
