@@ -2,6 +2,8 @@ from __future__ import annotations
 from pydantic import BaseModel, model_validator
 import numpy as np
 
+from src.models.recipe.recipe import Recipe
+
 
 class MacrosRatio(BaseModel):
     """Macro ingredients percentage content <0.0, 1.0>"""
@@ -25,8 +27,8 @@ class MacrosRatio(BaseModel):
         ):
             raise ValueError(
                 f"""Macros coefficients must sum to one. Current macros coefficients: protein : {self.protein}
-                                                                                      fat : {self.protein}
-                                                                                      carbohydrates : {self.carbohydrates}"""
+                                                                                     fat : {self.fat}
+                                                                                     carbohydrates : {self.carbohydrates}"""
             )  # todo: custom exception like BadMacrosContentError
 
 
@@ -34,8 +36,8 @@ class Dietitian:
     """Class implementing fluent interface pattern"""
 
     def __init__(self):
-        self._kcal_goal: int | None = None
-        self._meals_num: int | None = None
+        self._kcal_goal: int | None = 2000
+        self._meals_num: int | None = 4
         self._macros_ratio: MacrosRatio = MacrosRatio(
             protein=0.25, fat=0.30, carbohydrates=0.45
         )
@@ -60,8 +62,10 @@ class Dietitian:
         self._macros_ratio = macros_content
         return self
 
-    def add_recipe(self, ) -> None:
-        raise NotImplementedError
+    def add_recipe(self, post_recipe) -> Dietitian:
+        recipe = Recipe(post_recipe)
+        # todo add saving serialized recipe to a file
+        return self
 
     def get_diet(self) -> None:  # pd.DataFrame:
         raise NotImplementedError

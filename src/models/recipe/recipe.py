@@ -1,18 +1,14 @@
-from dataclasses import dataclass
-from itertools import product
-
 from pydantic import BaseModel
 
-from food_data_manager.food_data_manager import FoodDataManager
-from models.product.product import Product
+from src.food_data_manager.food_data_manager import FoodDataManager
 
 
 class RecipeModel(BaseModel):
     """
-    The body passed via API:
+    The example body passed via API:
     {
         "recipe": {
-            "name": string,
+            "name": omlet,
             "procedure": [
                 "Make something",
                 "Make something else",
@@ -32,10 +28,17 @@ class RecipeModel(BaseModel):
 
 
 class Recipe:
-    def __init__(self, recipe_model: RecipeModel):
-        self.name: str = recipe_model.name
-        self.procedure: tuple[str, ...] = recipe_model.procedure
-        product_names = tuple(product_name for product_name in recipe_model.products)
-        self.products: dict[Product, float] = {
-            FoodDataManager.products(recipe_model.products)
-        }  # todo
+    def __init__(self, recipe_model: dict):
+        recipe_model = RecipeModel(**recipe_model)
+
+        self.name = recipe_model.name
+        self.procedure = recipe_model.procedure
+        self.products = FoodDataManager.products(tuple(recipe_model.products.keys()))
+
+    def serialize(self) -> dict:
+        serialized = {
+            "name": self.name,
+            "procedure": self.procedure,
+            "products": [product.__dict__ for product in self.products],
+        }
+        return serialized
