@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 FAT_KCAL = 9
 PROTEIN_KCAL = 4
@@ -13,3 +13,4 @@ class Product:
     def __post_init__(self):
         for nutrient, value in self.nutrients.items():
             setattr(self, nutrient, value)
+        delattr(self, "nutrients")

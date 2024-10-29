@@ -65,7 +65,7 @@ class FoodDataManager:
     RETRY_PAUSE = 5
 
     @classmethod
-    def products(cls, products_names: tuple[str]) -> tuple[Product, ...]:
+    def products(cls, products_names: tuple[str, ...]) -> tuple[Product, ...]:
         return tuple(cls._search_product(name) for name in products_names)
 
     @classmethod
