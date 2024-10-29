@@ -50,8 +50,8 @@ def test_dietitian_raise_error(
             0.2,
             ValueError(
                 """Macros coefficients must sum to one. Current macros coefficients: protein : 0.5
-                                                                                      fat : 0.5
-                                                                                      carbohydrates : 0.2"""
+                                                                                     fat : 0.5
+                                                                                     carbohydrates : 0.2"""
             ),
         )
     ],
@@ -59,3 +59,21 @@ def test_dietitian_raise_error(
 def test_macros_ratio_return_error(protein, fat, carbohydrates, expected_error) -> None:
     with pytest.raises(type(expected_error), match=str(expected_error)):
         MacrosRatio(protein=protein, fat=fat, carbohydrates=carbohydrates)
+
+
+"""def test_add_recipe_adds_recipe_correctly():
+    recipe_section = {
+            "name": 'omlet',
+            "procedure": [
+                "Make something",
+                "Make something else",
+                "Finish"
+            ],
+            "products": {
+                "egg": 3,
+                "butter": 10
+            }
+        }
+
+    dietitian = Dietitian().add_recipe(post_recipe=recipe_section)
+    ww = 5"""
