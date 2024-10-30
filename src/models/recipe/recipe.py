@@ -8,7 +8,7 @@ class RecipeModel(BaseModel):
     The example body passed via API:
     {
         "recipe": {
-            "name": omlet,
+            "name": 'omlet',
             "procedure": [
                 "Make something",
                 "Make something else",
@@ -35,7 +35,7 @@ class Recipe:
         self.procedure = recipe_model.procedure
         self.products = FoodDataManager.products(tuple(recipe_model.products.keys()))
 
-    def serialize(self) -> dict:
+    def serialize(self) -> dict:  # todo: any usage?
         serialized = {
             "name": self.name,
             "procedure": self.procedure,
