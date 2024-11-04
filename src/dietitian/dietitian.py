@@ -2,7 +2,7 @@ from __future__ import annotations
 from pydantic import BaseModel, model_validator
 import numpy as np
 
-from src.models.recipe.recipe import Recipe
+from src.models.recipe.recipe import Recipe, RecipeModel
 
 
 class MacrosRatio(BaseModel):
@@ -62,7 +62,7 @@ class Dietitian:
         self._macros_ratio = macros_content
         return self
 
-    def add_recipe(self, post_recipe) -> Dietitian:
+    def add_recipe(self, post_recipe: RecipeModel) -> Dietitian:
         recipe = Recipe(post_recipe)
         # todo add saving serialized recipe to a file
         return self

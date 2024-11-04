@@ -1,13 +1,14 @@
 from pathlib import Path
 import json
+from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from models.recipe.recipe import RecipeModel
 
 
 class RecipesJsonModel(BaseModel):
-    recipes: list[RecipeModel]
+    recipes: list[Optional[RecipeModel]] = Field(default=[])
 
 
 class FilesIOManager:
@@ -15,17 +16,14 @@ class FilesIOManager:
 
     @classmethod
     def add_recipe(cls, recipe_json: RecipeModel):
-        with open(cls.RECIPES_PATH, mode="r+") as fp:
-            file_content = fp.read().strip()  # Read existing content
+        with open(cls.RECIPES_PATH, mode="w+") as fp:
+            file_content = fp.read()
 
             if file_content:
                 json_content = json.loads(file_content)
+                recipes = RecipesJsonModel(**json_content)
             else:
-                json_content = {}
+                recipes = RecipesJsonModel()
 
-            recipes = RecipesJsonModel(**json_content)
             recipes.recipes.append(recipe_json)
-
-            fp.seek(0)
             fp.write(recipes.model_dump_json())
-            fp.truncate()

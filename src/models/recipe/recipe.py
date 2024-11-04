@@ -28,8 +28,7 @@ class RecipeModel(BaseModel):
 
 
 class Recipe:
-    def __init__(self, recipe_model: dict):
-        recipe_model = RecipeModel(**recipe_model)
+    def __init__(self, recipe_model: RecipeModel):
 
         self.name = recipe_model.name
         self.procedure = recipe_model.procedure
