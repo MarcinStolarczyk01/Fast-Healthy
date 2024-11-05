@@ -4,7 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from models.recipe.recipe import RecipeModel
+from src.models.recipe.recipe import RecipeModel
 
 
 class RecipesJsonModel(BaseModel):
@@ -16,7 +16,8 @@ class FilesIOManager:
 
     @classmethod
     def add_recipe(cls, recipe_json: RecipeModel):
-        with open(cls.RECIPES_PATH, mode="w+") as fp:
+        cls.RECIPES_PATH.touch()
+        with open(cls.RECIPES_PATH, mode="r+") as fp:
             file_content = fp.read()
 
             if file_content:
@@ -26,4 +27,11 @@ class FilesIOManager:
                 recipes = RecipesJsonModel()
 
             recipes.recipes.append(recipe_json)
+            fp.seek(0)
             fp.write(recipes.model_dump_json())
+
+    @classmethod
+    def get_recipes(cls) -> RecipesJsonModel:
+        with open(cls.RECIPES_PATH, mode="r") as fp:
+            recipes = RecipesJsonModel(**json.loads(fp.read()))
+        return recipes

@@ -2,6 +2,7 @@ from __future__ import annotations
 from pydantic import BaseModel, model_validator
 import numpy as np
 
+from src.files_io_manager.files_io_manager import FilesIOManager, RecipesJsonModel
 from src.models.recipe.recipe import Recipe, RecipeModel
 
 
@@ -18,18 +19,19 @@ class MacrosRatio(BaseModel):
     @model_validator(mode="after")
     def __post_init__(self):
         if not all(
-            [
-                np.isclose(self.protein + self.fat + self.carbohydrates, 1, atol=0.01),
-                self.protein >= 0,
-                self.fat >= 0,
-                self.carbohydrates >= 0,
-            ]
+                [
+                    np.isclose(self.protein + self.fat + self.carbohydrates, 1, atol=0.01),
+                    self.protein >= 0,
+                    self.fat >= 0,
+                    self.carbohydrates >= 0,
+                ]
         ):
             raise ValueError(
                 f"""Macros coefficients must sum to one. Current macros coefficients: protein : {self.protein}
                                                                                      fat : {self.fat}
                                                                                      carbohydrates : {self.carbohydrates}"""
             )  # todo: custom exception like BadMacrosContentError
+        return self
 
 
 class Dietitian:
@@ -63,9 +65,12 @@ class Dietitian:
         return self
 
     def add_recipe(self, post_recipe: RecipeModel) -> Dietitian:
-        recipe = Recipe(post_recipe)
-        # todo add saving serialized recipe to a file
+        FilesIOManager.add_recipe(post_recipe)
         return self
+
+    @staticmethod
+    def get_recipes() -> RecipesJsonModel:
+        return FilesIOManager.get_recipes()
 
     def get_diet(self) -> None:  # pd.DataFrame:
         raise NotImplementedError
