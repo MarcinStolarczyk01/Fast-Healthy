@@ -10,9 +10,10 @@ def root():
 
 @app.get("/recipes")
 def get_recipes():
-    pass
+    raise NotImplemented
 
 
 @app.post("/recipes")
 def post_recipes(recipe):
-    pass
+    raise NotImplemented
+
