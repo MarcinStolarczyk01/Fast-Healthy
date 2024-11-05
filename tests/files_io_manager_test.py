@@ -2,8 +2,8 @@ import json
 from pathlib import Path
 import os
 
-from files_io_manager.files_io_manager import FilesIOManager
-from models.recipe.recipe import RecipeModel
+from src.files_io_manager.files_io_manager import FilesIOManager, RecipesJsonModel
+from src.models.recipe.recipe import RecipeModel
 
 
 def test_add_recipe_should_add_recipe_correctly():
@@ -56,6 +56,8 @@ def test_add_recipe_should_add_multiple_recipes_correctly():
     recipes_path = Path(__file__).parent.joinpath("test_files", "recipes2.json")
 
     FilesIOManager.RECIPES_PATH = recipes_path
+    if recipes_path.exists():
+        os.remove(recipes_path)
 
     FilesIOManager.add_recipe(recipe1_json)
     FilesIOManager.add_recipe(recipe2_json)
@@ -76,4 +78,26 @@ def test_add_recipe_should_add_multiple_recipes_correctly():
     }
 
     with open(recipes_path) as fp:
-        assert json.loads(fp.read()) == expected_recipes_content
+        assert json.load(fp) == expected_recipes_content
+
+
+def test_get_recipes_should_return_all_recipes() -> None:
+    recipes_path = Path(__file__).parent.joinpath('test_files', 'recipes3.json')
+
+    recipes_to_save = {
+            'recipes': [
+                {
+                    "name": "toasts",
+                    "procedure": ["Make something", "Make something else", "Finish"],
+                    "products": {"bread": 6, "butter": 15, 'ham': 20},
+                }
+            ]
+        }
+
+    with open(recipes_path, 'w+') as fp:
+        fp.write('')
+        fp.write(json.dumps(recipes_to_save))
+    FilesIOManager.RECIPES_PATH = recipes_path
+    result_recipes = FilesIOManager.get_recipes()
+
+    assert result_recipes == RecipesJsonModel(**recipes_to_save)
