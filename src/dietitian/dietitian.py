@@ -19,12 +19,12 @@ class MacrosRatio(BaseModel):
     @model_validator(mode="after")
     def __post_init__(self):
         if not all(
-                [
-                    np.isclose(self.protein + self.fat + self.carbohydrates, 1, atol=0.01),
-                    self.protein >= 0,
-                    self.fat >= 0,
-                    self.carbohydrates >= 0,
-                ]
+            [
+                np.isclose(self.protein + self.fat + self.carbohydrates, 1, atol=0.01),
+                self.protein >= 0,
+                self.fat >= 0,
+                self.carbohydrates >= 0,
+            ]
         ):
             raise ValueError(
                 f"""Macros coefficients must sum to one. Current macros coefficients: protein : {self.protein}
