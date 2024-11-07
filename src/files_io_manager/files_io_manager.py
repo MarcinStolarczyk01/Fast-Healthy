@@ -32,6 +32,9 @@ class FilesIOManager:
 
     @classmethod
     def get_recipes(cls) -> RecipesJsonModel:
+        if not cls.RECIPES_PATH.exists():
+            with cls.RECIPES_PATH.open(mode='w+') as fp:
+                fp.write('{}')
         with open(cls.RECIPES_PATH, mode="r") as fp:
             recipes = RecipesJsonModel(**json.loads(fp.read()))
         return recipes

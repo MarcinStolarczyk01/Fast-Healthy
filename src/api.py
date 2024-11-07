@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from fastapi import FastAPI, HTTPException
 from pydantic import ValidationError
 
@@ -13,19 +15,28 @@ def root():
     return "Welcome to Fast&Healthy API!"
 
 
-@app.get("/recipes", status_code=200)
+@app.get("/recipes", status_code=HTTPStatus.OK)
 def get_recipes():
-    raise NotImplemented
+    try:
+        return dietitian.get_recipes().model_dump_json()
+    except Exception as e:
+        raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                            detail=f"Unexpected error: {e}")
 
 
-@app.post("/recipes", status_code=201)
+@app.post("/recipes", status_code=HTTPStatus.CREATED)
 def post_recipes(recipe: dict):
     try:
         dietitian.add_recipe(RecipeModel(**recipe))
     except ValidationError as e:
-        raise HTTPException(status_code=422, detail=f"ValidationError: {e}")
+        raise HTTPException(
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY, detail=f"ValidationError: {e}"
+        )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Unexpected Error: {e}")
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail=f"Unexpected error: {e}",
+        )
 
 
 @app.post("/config", status_code=201)
