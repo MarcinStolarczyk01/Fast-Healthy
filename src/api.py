@@ -20,8 +20,10 @@ def get_recipes():
     try:
         return dietitian.get_recipes().model_dump_json()
     except Exception as e:
-        raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                            detail=f"Unexpected error: {e}")
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail=f"Unexpected error: {e}",
+        )
 
 
 @app.post("/recipes", status_code=HTTPStatus.CREATED)
