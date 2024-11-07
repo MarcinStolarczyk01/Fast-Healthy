@@ -4,13 +4,16 @@ from src.models.recipe.recipe import Recipe, RecipeModel
 import pytest
 
 
-@pytest.mark.parametrize('recipe_section',
-                         [{
-                             "name": "omlet",
-                             "procedure": ["Make something", "Make something else", "Finish"],
-                             "products": {"egg": 3, "butter": 10},
-                         }]
-                         )
+@pytest.mark.parametrize(
+    "recipe_section",
+    [
+        {
+            "name": "omlet",
+            "procedure": ["Make something", "Make something else", "Finish"],
+            "products": {"egg": 3, "butter": 10},
+        }
+    ],
+)
 def test_recipe_should_create_object_from_recipe_model(recipe_section):
     recipe = Recipe(RecipeModel(**recipe_section))
 
@@ -23,12 +26,12 @@ def test_recipe_should_create_object_from_recipe_model(recipe_section):
     "recipe_section, error_type",
     [
         (
-                {
-                    "recipe title": "omlet",
-                    "procedure": ["Make something", "Make something else", "Finish"],
-                    "products": {"egg": 3, "butter": 10},
-                },
-                ValidationError,
+            {
+                "recipe title": "omlet",
+                "procedure": ["Make something", "Make something else", "Finish"],
+                "products": {"egg": 3, "butter": 10},
+            },
+            ValidationError,
         ),
     ],
 )

@@ -73,7 +73,7 @@ def test_add_recipe_should_add_multiple_recipes_correctly():
                 "name": "omlet",
                 "procedure": ["Make something", "Make something else", "Finish"],
                 "products": {"egg": 3, "butter": 10},
-            }
+            },
         ]
     }
 
@@ -82,20 +82,20 @@ def test_add_recipe_should_add_multiple_recipes_correctly():
 
 
 def test_get_recipes_should_return_all_recipes() -> None:
-    recipes_path = Path(__file__).parent.joinpath('test_files', 'recipes3.json')
+    recipes_path = Path(__file__).parent.joinpath("test_files", "recipes3.json")
 
     recipes_to_save = {
-            'recipes': [
-                {
-                    "name": "toasts",
-                    "procedure": ["Make something", "Make something else", "Finish"],
-                    "products": {"bread": 6, "butter": 15, 'ham': 20},
-                }
-            ]
-        }
+        "recipes": [
+            {
+                "name": "toasts",
+                "procedure": ["Make something", "Make something else", "Finish"],
+                "products": {"bread": 6, "butter": 15, "ham": 20},
+            }
+        ]
+    }
 
-    with open(recipes_path, 'w+') as fp:
-        fp.write('')
+    with open(recipes_path, "w+") as fp:
+        fp.write("")
         fp.write(json.dumps(recipes_to_save))
     FilesIOManager.RECIPES_PATH = recipes_path
     result_recipes = FilesIOManager.get_recipes()
