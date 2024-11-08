@@ -1,10 +1,12 @@
 import logging
 import os
+import threading
 import time
 import requests
 from pydantic import BaseModel
 from requests import RequestException
 from enum import Enum
+from concurrent.futures import ThreadPoolExecutor
 
 from src.exceptions.exceptions import (
     MissingAPIKeyError,
@@ -66,11 +68,14 @@ class FoodDataManager:
 
     @classmethod
     def products(cls, products_names: tuple[str, ...]) -> tuple[Product, ...]:
+        products = []
+        with ThreadPoolExecutor(max_workers=100) as executor:
+
         return tuple(cls._search_product(name) for name in products_names)
 
     @classmethod
     def _search_product(
-        cls, name: str, data_type: str = "Foundation,SR%20Legacy", limit: int = 1
+            cls, name: str, data_type: str = "Foundation,SR%20Legacy", limit: int = 1
     ) -> Product:
         request_url = f"{cls.API_ENDPOINT}?query={name}&dataType={data_type}&pageSize={limit}&api_key={cls.DATABASE_API_KEY}"
 

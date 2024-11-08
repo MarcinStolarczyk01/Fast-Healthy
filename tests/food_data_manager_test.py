@@ -2,6 +2,8 @@ import numpy as np
 
 from src.food_data_manager.food_data_manager import FoodDataManager
 from pytest import mark
+import time
+import datetime
 
 from src.models.product.product import Product
 
@@ -33,3 +35,28 @@ def test_food_data_manager_products_should_return_expected_products(
             assert np.isclose(
                 getattr(product, nutrient, None), value, rtol=0.20, atol=3
             )
+
+
+# _______PERFORMANCE TESTS_________
+
+
+def test_food_data_manager_products_should_get_recipes_in_quasi_linear_time():
+    products = tuple(
+        [
+            "cheddar",
+            "chicken breast raw",
+            "whole egg",
+            "white bread",
+            "rye bread",
+            "spaghetti",
+            "pasta",
+            "potatoes raw",
+            "beef",
+        ]
+    )
+    manager = FoodDataManager()
+
+    start = time.time()
+    _ = manager.products(products)  # todo: implement multithreading
+    end = time.time()
+    print("Execution time: ", end - start)
