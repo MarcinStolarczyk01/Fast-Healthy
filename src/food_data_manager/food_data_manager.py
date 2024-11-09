@@ -70,12 +70,12 @@ class FoodDataManager:
     def products(cls, products_names: tuple[str, ...]) -> tuple[Product, ...]:
         products = []
         with ThreadPoolExecutor(max_workers=100) as executor:
-
-        return tuple(cls._search_product(name) for name in products_names)
+            products.extend(executor.map(cls._search_product, products_names))
+        return tuple(products)
 
     @classmethod
     def _search_product(
-            cls, name: str, data_type: str = "Foundation,SR%20Legacy", limit: int = 1
+        cls, name: str, data_type: str = "Foundation,SR%20Legacy", limit: int = 1
     ) -> Product:
         request_url = f"{cls.API_ENDPOINT}?query={name}&dataType={data_type}&pageSize={limit}&api_key={cls.DATABASE_API_KEY}"
 
