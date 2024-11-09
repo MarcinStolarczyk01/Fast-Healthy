@@ -1,6 +1,5 @@
 import logging
 import os
-import threading
 import time
 import requests
 from pydantic import BaseModel
@@ -69,7 +68,7 @@ class FoodDataManager:
     @classmethod
     def products(cls, products_names: tuple[str, ...]) -> tuple[Product, ...]:
         products = []
-        with ThreadPoolExecutor(max_workers=100) as executor:
+        with ThreadPoolExecutor(max_workers=len(products_names)) as executor:
             products.extend(executor.map(cls._search_product, products_names))
         return tuple(products)
 
