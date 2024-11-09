@@ -5,7 +5,6 @@ from pathlib import Path
 import pytest
 from starlette.testclient import TestClient
 
-from api import dietitian
 from src.api import app
 from src.files_io_manager.files_io_manager import FilesIOManager
 
@@ -61,18 +60,26 @@ def test_post_recipes_should_return_status_code_correct_code(
     "recipes_content",
     [
         {
-            "name": "meal one",
-            "procedure": [
-                "Brush your teeth!",
-            ],
-            "products": {"egg": 3.0, "butter": 10.0},
+            "recipes": [
+                {
+                    "name": "meal one",
+                    "procedure": [
+                        "Brush your teeth!",
+                    ],
+                    "products": {"egg": 3.0, "butter": 10.0},
+                }
+            ]
         },
-        {},
+        {"recipes": []},
     ],
 )
 def test_get_recipes_should_return_expected_json(recipes_content):
-    FilesIOManager.RECIPES_PATH = Path(__file__).parent.joinpath(
-        "test_files", "recipes5.json"
-    )
+    recipes_path = Path(__file__).parent.joinpath("test_files", "recipes5.json")
+    FilesIOManager.RECIPES_PATH = recipes_path
 
-    assert dietitian.get_recipes().model_dump_json() == str(recipes_content)
+    with open(recipes_path, "w+") as fp:
+        fp.write(json.dumps(recipes_content))
+
+    response = client.get("/recipes")
+
+    assert json.loads(response.json()) == recipes_content

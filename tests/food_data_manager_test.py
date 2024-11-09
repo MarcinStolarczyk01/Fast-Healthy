@@ -3,7 +3,6 @@ import numpy as np
 from src.food_data_manager.food_data_manager import FoodDataManager
 from pytest import mark
 import time
-import datetime
 
 from src.models.product.product import Product
 
@@ -40,8 +39,9 @@ def test_food_data_manager_products_should_return_expected_products(
 # _______PERFORMANCE TESTS_________
 
 
-def test_food_data_manager_products_should_get_recipes_in_quasi_linear_time():
-    products = tuple(
+def test_food_data_manager_products_should_get_recipes_in_quasi_constant_time():
+    single_product = tuple(["beef raw"])
+    many_products = tuple(
         [
             "cheddar",
             "chicken breast raw",
@@ -57,6 +57,13 @@ def test_food_data_manager_products_should_get_recipes_in_quasi_linear_time():
     manager = FoodDataManager()
 
     start = time.time()
-    _ = manager.products(products)  # todo: implement multithreading
-    end = time.time()
-    print("Execution time: ", end - start)
+    manager.products(single_product)
+    short_time = time.time() - start
+
+    start = time.time()
+    manager.products(many_products)
+    long_time = time.time() - start
+
+    long_time_tol = 2 * short_time
+
+    assert long_time < long_time_tol
