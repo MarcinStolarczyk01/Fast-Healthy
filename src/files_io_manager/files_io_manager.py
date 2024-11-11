@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import json
 from typing import Optional
@@ -38,3 +39,7 @@ class FilesIOManager:
         with open(cls.RECIPES_PATH, mode="r") as fp:
             recipes = RecipesJsonModel(**json.loads(fp.read()))
         return recipes
+
+    @classmethod
+    def del_recipes(cls) -> None:
+        os.remove(cls.RECIPES_PATH)

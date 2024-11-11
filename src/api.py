@@ -41,6 +41,14 @@ def post_recipes(recipe: dict):
         )
 
 
+@app.post("/recipes/delete", status_code=HTTPStatus.NO_CONTENT)
+def del_recipes(
+    delete_request: dict,
+):  # todo: pydantic model like {"recipes": list | literal['all']}
+    if delete_request["recipes"] == "all":
+        dietitian.del_recipes()
+
+
 @app.post("/config", status_code=201)
 def configure_dietitian():
     raise NotImplemented

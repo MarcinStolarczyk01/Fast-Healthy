@@ -72,5 +72,9 @@ class Dietitian:
     def get_recipes() -> RecipesJsonModel:
         return FilesIOManager.get_recipes()
 
+    @staticmethod
+    def del_recipes() -> None:
+        FilesIOManager.del_recipes()
+
     def get_diet(self) -> None:  # pd.DataFrame:
         raise NotImplementedError
