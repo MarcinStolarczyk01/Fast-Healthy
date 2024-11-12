@@ -1,7 +1,8 @@
 from http import HTTPStatus
+from typing import Union, Literal
 
 from fastapi import FastAPI, HTTPException
-from pydantic import ValidationError
+from pydantic import ValidationError, BaseModel
 
 from src.dietitian.dietitian import Dietitian
 from src.models.recipe.recipe import RecipeModel
@@ -41,12 +42,25 @@ def post_recipes(recipe: dict):
         )
 
 
+class DeleteRecipesModel(BaseModel):
+    recipes: Union[list[str], Literal['*']]
+
+
 @app.post("/recipes/delete", status_code=HTTPStatus.NO_CONTENT)
 def del_recipes(
-    delete_request: dict,
-):  # todo: pydantic model like {"recipes": list | literal['all']}
-    if delete_request["recipes"] == "all":
-        dietitian.del_recipes()
+        delete_request: dict):
+    try:
+        dietitian.del_recipes(DeleteRecipesModel(**delete_request))
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY, detail=f"ValidationError: {e}"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail=f"Unexpected error: {e}",
+        )
+
 
 
 @app.post("/config", status_code=201)

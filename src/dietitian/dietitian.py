@@ -2,6 +2,7 @@ from __future__ import annotations
 from pydantic import BaseModel, model_validator
 import numpy as np
 
+from src.api import DeleteRecipesModel
 from src.files_io_manager.files_io_manager import FilesIOManager, RecipesJsonModel
 from src.models.recipe.recipe import Recipe, RecipeModel
 
@@ -73,8 +74,9 @@ class Dietitian:
         return FilesIOManager.get_recipes()
 
     @staticmethod
-    def del_recipes() -> None:
-        FilesIOManager.del_recipes()
+    def del_recipes(delete_request: DeleteRecipesModel) -> None:
+        if delete_request.recipes == '*':
+            FilesIOManager.del_recipes(de)
 
     def get_diet(self) -> None:  # pd.DataFrame:
         raise NotImplementedError
