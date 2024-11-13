@@ -43,14 +43,14 @@ def post_recipes(recipe: dict):
 
 
 class DeleteRecipesModel(BaseModel):
-    recipes: Union[list[str], Literal['*']]
+    recipes: Union[list[str], Literal["*"]]
 
 
 @app.post("/recipes/delete", status_code=HTTPStatus.NO_CONTENT)
-def del_recipes(
-        delete_request: dict):
+def del_recipes(delete_request: dict):
     try:
         dietitian.del_recipes(DeleteRecipesModel(**delete_request))
+        return {"message": "Successfully deleted recipes"}
     except ValidationError as e:
         raise HTTPException(
             status_code=HTTPStatus.UNPROCESSABLE_ENTITY, detail=f"ValidationError: {e}"
@@ -60,7 +60,6 @@ def del_recipes(
             status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
             detail=f"Unexpected error: {e}",
         )
-
 
 
 @app.post("/config", status_code=201)

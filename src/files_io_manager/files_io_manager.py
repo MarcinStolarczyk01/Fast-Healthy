@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import json
-from typing import Optional
+from typing import Optional, Iterable
 
 from pydantic import BaseModel, Field
 
@@ -45,16 +45,22 @@ class FilesIOManager:
         os.remove(cls.RECIPES_PATH)
 
     @classmethod
-    def remove_recipes(cls, recipes_names: tuple[str]) -> None:
-        for name in recipes_names:
-            with open(cls.RECIPES_PATH, mode="r+") as fp:
-                file_content = fp.read()
+    def drop_recipes(cls, recipes_names: Iterable[str]) -> None:
+        with open(cls.RECIPES_PATH, mode="r+") as fp:
+            file_content = fp.read()
 
-                if file_content:
-                    json_content = json.loads(file_content)
-                    recipes = RecipesJsonModel(**json_content)
-                else:
-                    recipes = RecipesJsonModel()
+            if file_content:
+                json_content = json.loads(file_content)
+                recipes = RecipesJsonModel(**json_content)
+            else:
+                recipes = RecipesJsonModel()
 
-                fp.seek(0)
-                fp.write(recipes.model_dump_json())
+            filtered_recipes = [
+                recipe
+                for recipe in recipes.recipes
+                if recipe and recipe.name not in recipes_names
+            ]
+            recipes.recipes = filtered_recipes
+
+            fp.seek(0)
+            fp.write(recipes.model_dump_json())

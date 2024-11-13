@@ -2,9 +2,8 @@ from __future__ import annotations
 from pydantic import BaseModel, model_validator
 import numpy as np
 
-from src.api import DeleteRecipesModel
 from src.files_io_manager.files_io_manager import FilesIOManager, RecipesJsonModel
-from src.models.recipe.recipe import Recipe, RecipeModel
+from src.models.recipe.recipe import RecipeModel
 
 
 class MacrosRatio(BaseModel):
@@ -74,9 +73,11 @@ class Dietitian:
         return FilesIOManager.get_recipes()
 
     @staticmethod
-    def del_recipes(delete_request: DeleteRecipesModel) -> None:
-        if delete_request.recipes == '*':
-            FilesIOManager.del_recipes(de)
+    def del_recipes(delete_request: 'DeleteRecipesModel') -> None:
+        if delete_request.recipes == "*":
+            FilesIOManager.del_recipes()
+        else:
+            FilesIOManager.drop_recipes(delete_request.recipes)
 
     def get_diet(self) -> None:  # pd.DataFrame:
         raise NotImplementedError
