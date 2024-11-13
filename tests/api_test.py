@@ -83,3 +83,38 @@ def test_get_recipes_should_return_expected_json(recipes_content):
     response = client.get("/recipes")
 
     assert json.loads(response.json()) == recipes_content
+
+
+@pytest.mark.parametrize(
+    "recipes_to_del",
+    [{"recipes_to_del": ["*"]}, {"recipes_to_del": ["pancakes", "hamburger"]}],
+)
+def test_post_recipes_delete_removes_specified_recipes(recipes_to_del):
+    recipes_path = Path(__file__).parent.joinpath("test_files", "recipes6.json")
+    FilesIOManager.RECIPES_PATH = recipes_path
+
+    recipes_content = {
+        "recipes": [
+            {
+                "name": "omlet",
+                "procedure": ["Make something", "Make something else", "Finish"],
+                "products": {"egg": 3.0, "butter": 10.0},
+            },
+            {
+                "name": "pancakes",
+                "procedure": ["Make something", "Make something else", "Finish"],
+                "products": {"egg": 3.0, "flour": 100, "oil": 10},
+            },
+            {
+                "name": "hamburger",
+                "procedure": ["Make something", "Make something else", "Finish"],
+                "products": {"beef": 150.0, "bread": 100, "oil": 10, "salad": 30},
+            },
+        ]
+    }
+
+    with open(recipes_path, "w+") as fp:
+        fp.write(json.dumps(recipes_content))
+
+    response = client.post("/recipes/delete", json=recipes_to_del)
+    assert response.json() == {"message": "Successfully deleted recipes"}
