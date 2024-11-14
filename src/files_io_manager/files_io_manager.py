@@ -41,10 +41,6 @@ class FilesIOManager:
         return recipes
 
     @classmethod
-    def del_recipes(cls) -> None:
-        os.remove(cls.RECIPES_PATH)
-
-    @classmethod
     def drop_recipes(cls, recipes_names: Iterable[str]) -> None:
         with open(cls.RECIPES_PATH, mode="r+") as fp:
             file_content = fp.read()
@@ -55,11 +51,14 @@ class FilesIOManager:
             else:
                 recipes = RecipesJsonModel()
 
-            filtered_recipes = [
-                recipe
-                for recipe in recipes.recipes
-                if recipe and recipe.name not in recipes_names
-            ]
+            if '*' not in recipes_names:
+                filtered_recipes = [
+                    recipe
+                    for recipe in recipes.recipes
+                    if recipe and recipe.name not in recipes_names
+                ]
+            else:
+                filtered_recipes = []
             recipes.recipes = filtered_recipes
 
             fp.seek(0)

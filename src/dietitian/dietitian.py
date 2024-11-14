@@ -73,11 +73,8 @@ class Dietitian:
         return FilesIOManager.get_recipes()
 
     @staticmethod
-    def del_recipes(delete_request: 'DeleteRecipesModel') -> None:
-        if delete_request.recipes == "*":
-            FilesIOManager.del_recipes()
-        else:
-            FilesIOManager.drop_recipes(delete_request.recipes)
+    def del_recipes(delete_request: "DeleteRecipesModel") -> None:
+        FilesIOManager.drop_recipes(delete_request.recipes)
 
     def get_diet(self) -> None:  # pd.DataFrame:
         raise NotImplementedError

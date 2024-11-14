@@ -1,3 +1,4 @@
+import json
 from http import HTTPStatus
 from typing import Union, Literal
 
@@ -46,11 +47,11 @@ class DeleteRecipesModel(BaseModel):
     recipes: Union[list[str], Literal["*"]]
 
 
-@app.post("/recipes/delete", status_code=HTTPStatus.NO_CONTENT)
+@app.post("/recipes/delete", status_code=HTTPStatus.OK)
 def del_recipes(delete_request: dict):
     try:
         dietitian.del_recipes(DeleteRecipesModel(**delete_request))
-        return {"message": "Successfully deleted recipes"}
+        return json.dumps({"message": "Successfully deleted recipes"})
     except ValidationError as e:
         raise HTTPException(
             status_code=HTTPStatus.UNPROCESSABLE_ENTITY, detail=f"ValidationError: {e}"
