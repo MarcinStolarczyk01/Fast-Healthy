@@ -4,24 +4,6 @@ from src.food_data_manager.food_data_manager import FoodDataManager
 
 
 class RecipeModel(BaseModel):
-    """
-    The example body passed via API:
-    {
-        "recipe": {
-            "name": 'omlet',
-            "procedure": [
-                "Make something",
-                "Make something else",
-                "Finish"
-            ],
-            "products": {
-                "egg": 3,
-                "butter": 10
-            }
-        }
-    }
-    """
-
     name: str
     procedure: tuple[str, ...]
     products: dict[str, float]
@@ -29,7 +11,6 @@ class RecipeModel(BaseModel):
 
 class Recipe:
     def __init__(self, recipe_model: RecipeModel):
-
         self.name = recipe_model.name
         self.procedure = recipe_model.procedure
         self.products = FoodDataManager.products(tuple(recipe_model.products.keys()))

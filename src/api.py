@@ -20,7 +20,7 @@ def root():
 @app.get("/recipes", status_code=HTTPStatus.OK)
 def get_recipes():
     try:
-        return dietitian.get_recipes().model_dump_json()
+        return json.loads(dietitian.get_recipes().model_dump_json())
     except Exception as e:
         raise HTTPException(
             status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
@@ -29,9 +29,10 @@ def get_recipes():
 
 
 @app.post("/recipes", status_code=HTTPStatus.CREATED)
-def post_recipes(recipe: dict):
+def post_recipes(recipe: RecipeModel):
     try:
-        dietitian.add_recipe(RecipeModel(**recipe))
+        dietitian.add_recipe(recipe)
+        return {"message": "Successfully added the recipe"}
     except ValidationError as e:
         raise HTTPException(
             status_code=HTTPStatus.UNPROCESSABLE_ENTITY, detail=f"ValidationError: {e}"
@@ -48,10 +49,10 @@ class DeleteRecipesModel(BaseModel):
 
 
 @app.post("/recipes/delete", status_code=HTTPStatus.OK)
-def del_recipes(delete_request: dict):
+def del_recipes(delete_request: DeleteRecipesModel):
     try:
-        dietitian.del_recipes(DeleteRecipesModel(**delete_request))
-        return json.dumps({"message": "Successfully deleted recipes"})
+        dietitian.del_recipes(delete_request)
+        return {"message": "Successfully deleted recipes"}
     except ValidationError as e:
         raise HTTPException(
             status_code=HTTPStatus.UNPROCESSABLE_ENTITY, detail=f"ValidationError: {e}"

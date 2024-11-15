@@ -11,7 +11,7 @@ class RecipesJsonModel(BaseModel):
 
 
 class FilesIOManager:
-    RECIPES_PATH = Path(__file__).joinpath("recipes.json")
+    RECIPES_PATH = Path(__file__).parent.joinpath("recipes.json")
 
     @classmethod
     def add_recipe(cls, recipe_json: RecipeModel):

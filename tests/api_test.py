@@ -2,7 +2,6 @@ import json
 import os
 from http import HTTPStatus
 from pathlib import Path
-from threading import Lock
 import pytest
 from starlette.testclient import TestClient
 
@@ -83,7 +82,7 @@ def test_get_recipes_should_return_expected_json(recipes_content, tmp_path: Path
 
     response = client.get("/recipes")
 
-    assert json.loads(response.json()) == recipes_content
+    assert response.json() == recipes_content
 
 
 RECIPES_CONTENT = {
@@ -142,7 +141,7 @@ def test_post_recipes_delete_removes_specified_recipes(
     # Call the API to delete recipes
     response = client.post("/recipes/delete", json=recipes_to_del)
 
-    assert json.loads(response.json()) == {"message": "Successfully deleted recipes"}
+    assert response.json() == {"message": "Successfully deleted recipes"}
 
     # Read back the content to verify deletion
     with open(FilesIOManager.RECIPES_PATH, "r") as fp:
