@@ -1,8 +1,6 @@
-import os
 from pathlib import Path
 import json
 from typing import Optional, Iterable
-
 from pydantic import BaseModel, Field
 
 from src.models.recipe.recipe import RecipeModel
@@ -17,7 +15,8 @@ class FilesIOManager:
 
     @classmethod
     def add_recipe(cls, recipe_json: RecipeModel):
-        cls.RECIPES_PATH.touch()
+        cls.ensure_recipes_file()
+
         with open(cls.RECIPES_PATH, mode="r+") as fp:
             file_content = fp.read()
 
@@ -28,38 +27,46 @@ class FilesIOManager:
                 recipes = RecipesJsonModel()
 
             recipes.recipes.append(recipe_json)
+            fp.truncate(0)
             fp.seek(0)
             fp.write(recipes.model_dump_json())
 
     @classmethod
     def get_recipes(cls) -> RecipesJsonModel:
-        if not cls.RECIPES_PATH.exists():
-            with cls.RECIPES_PATH.open(mode="w+") as fp:
-                fp.write("{}")
+        cls.ensure_recipes_file()
+
         with open(cls.RECIPES_PATH, mode="r") as fp:
             recipes = RecipesJsonModel(**json.loads(fp.read()))
         return recipes
 
     @classmethod
-    def drop_recipes(cls, recipes_names: Iterable[str]) -> None:
+    def drop_recipes(cls, recipes_to_del: Iterable[str]) -> None:
+        cls.ensure_recipes_file()
+
         with open(cls.RECIPES_PATH, mode="r+") as fp:
-            file_content = fp.read()
+            recipes_content = json.loads(fp.read())
+            present_recipes = RecipesJsonModel(**recipes_content)
 
-            if file_content:
-                json_content = json.loads(file_content)
-                recipes = RecipesJsonModel(**json_content)
+            if "*" in recipes_to_del:
+                recipes_to_save = RecipesJsonModel()
             else:
-                recipes = RecipesJsonModel()
-
-            if '*' not in recipes_names:
-                filtered_recipes = [
+                recipes_to_save = RecipesJsonModel()
+                recipes_to_save.recipes = [
                     recipe
-                    for recipe in recipes.recipes
-                    if recipe and recipe.name not in recipes_names
+                    for recipe in present_recipes.recipes
+                    if recipe.name not in recipes_to_del
                 ]
-            else:
-                filtered_recipes = []
-            recipes.recipes = filtered_recipes
 
+            fp.truncate(0)
             fp.seek(0)
-            fp.write(recipes.model_dump_json())
+
+            fp.write(recipes_to_save.model_dump_json())
+
+    @classmethod
+    def ensure_recipes_file(cls) -> None:
+        if cls.RECIPES_PATH.exists():
+            with open(cls.RECIPES_PATH, mode="r") as fp:
+                RecipesJsonModel.model_validate_json(fp.read())
+        else:
+            with open(cls.RECIPES_PATH, mode="w") as fp:
+                fp.write(RecipesJsonModel().model_dump_json())
