@@ -26,7 +26,7 @@ To set up **Fast&Healthy**, follow those steps:
 2. [optional] It is recommended to install requirements in an isolated environment. You can create one by running the script below.
    ```bash
    # Install venv package
-   python -m pip install virtualenv
+   pip install virtualenv
    
    # Create new virtual environment under "venv" name
    virtualenv ./venv
@@ -55,12 +55,12 @@ pytest .
 To run the Fast&Healthy API and confirm its functionality, ensure you have the following dependencies installed:
 
 ### Python Version
-- Python >= 3.12
+- Python >= 3.11
 
 ### Dependencies
 The required Python packages are listed below.
 ```plaintext
-fastapi==0.115.4
+fastapi[standard]==0.115.4
 numpy==2.1.3
 pydantic==2.9.2
 pytest==8.3.2
