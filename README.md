@@ -1,20 +1,57 @@
 # Fast&Healthy
+
 ## Introduction
-The solution is an API desired to create your diet plan no mater what is your current body goal. Fast&Healthy is a great product not only for people with strict diet but also for those burning their time on thinking what they want to eat, what products they should buy and how much thei spend on groceries.
-You want to gain control? Follow those steps:
-1. Manually fill in recipes database with your favourite meals, the more you add the greater diversity and the lower difference between declared daily calorie and actual consumption.
-2. Provide basic nutrition values you want to follow daily, for example the number of calories to consume and how many meals per day you are used to eat.
-3. Get your personalized weekly diet in PDF format, export grocery list and keep control of your spendings
+Fast&Healthy is an API designed to create personalized diet plans, no matter your current body goal. It’s not just for people on a strict diet but also for those who struggle with deciding what to eat, which products to buy, and how much to spend on groceries.
+
+Want to gain control over your diet? Follow these steps:
+1. Manually add your favorite meals to the recipe database. The more meals you add, the greater the diversity, and the smaller the gap between your declared daily calorie goal and your actual consumption.
+2. Set your daily nutritional goals, such as the number of calories to consume and how many meals per day you typically eat.
+3. Receive your personalized weekly diet plan in PDF format, export your grocery list, and keep track of your spending.
 
 ## Idea
-Fast&Healthy will be based on Python for its flexibility and short development time. 
-Recipes ingredients data will be provided by usda food database. 
-As the usda do not support direct access to their database Food Data API will be used in order to extract information about nutrients.
-Fast&Healthy API will be developed using FastAPI framework.
-Diet optimization will be based on Evolution (Genetic) algorithm.
-The optimization target will be keeping calories and nutrients values as close to those provide by a user while maintaining some level of diet diversity.
-## Requirements
-- Python3.12
-- ...
+Fast&Healthy will be developed in Python for its flexibility and rapid development. 
 
-#### Warning! Features mentioned in _Introduction_ section are under development and have only informational purpose.
+Recipe ingredient data will be sourced from the USDA Food Database. Since the USDA doesn't provide direct access to its database, the Food Data API will be used to extract nutrient information.
+
+The Fast&Healthy API will be built using the FastAPI framework, ensuring fast and efficient performance.
+
+Diet optimization will be based on an Evolutionary (Genetic) Algorithm, with the goal of keeping calories and nutrient values close to those specified by the user, while maintaining a level of diet diversity.
+
+## Setup
+To set up Fast&Healthy, follow those steps:
+1. Clone the repository.
+   ```bash
+   git clone https://github.com/MarcinStolarczyk01/Fast-Healthy.git
+   ```
+3. Create and activate a virtual environment. If you are new to Python check out [How to create venv environment?](https://docs.python.org/3/library/venv.html)
+4. Install all dependencies with:
+   ```bash
+   pip install -r requirements.txt
+   ```
+5. Run the API on the local host:
+   ```bash
+   fastapi run src/api.py
+   ```
+6. Open API interactive documentation in your browser. The FastAPI runs at port 8000 by default. [Go to Fast&Healthy API docs](http://localhost:8000/docs)
+## Running tests
+You can confirm that the program is working correctly by running:
+```bash
+pytest .
+```
+## Requirements
+To run the Fast&Healthy API and confirm its functionality, ensure you have the following dependencies installed:
+
+### Python Version
+- Python >= 3.12
+
+### Dependencies
+The required Python packages are listed below.
+```plaintext
+fastapi==0.115.4
+numpy==2.1.3
+pydantic==2.9.2
+pytest==8.3.2
+Requests==2.32.3
+starlette==0.41.2
+```
+#### Warning! Features mentioned in the *Introduction* section are still under development and are for informational purposes only.
