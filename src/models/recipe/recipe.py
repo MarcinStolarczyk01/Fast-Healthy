@@ -15,10 +15,6 @@ class Recipe:
         self.procedure = recipe_model.procedure
         self.products = FoodDataManager.products(tuple(recipe_model.products.keys()))
 
-    def serialize(self) -> dict:  # todo: any usage?
-        serialized = {
-            "name": self.name,
-            "procedure": self.procedure,
-            "products": [product.__dict__ for product in self.products],
-        }
-        return serialized
+    @property
+    def kcal(self):
+        return sum(product.kcal for product in self.products)
