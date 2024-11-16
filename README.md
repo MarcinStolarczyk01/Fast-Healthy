@@ -42,7 +42,7 @@ To set up **Fast&Healthy**, follow those steps:
    ```
 4. Run the API on the local host.
    ```bash
-   fastapi run src/api.py
+   fastapi dev src/api.py
    ```
 5. Open API interactive documentation in your browser. The FastAPI runs at port 8000 by default.\
    Enter the site: [Fast&Healthy API docs](http://localhost:8000/docs)
