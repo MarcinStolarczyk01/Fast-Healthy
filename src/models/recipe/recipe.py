@@ -16,5 +16,5 @@ class Recipe:
         self.products = FoodDataManager.products(tuple(recipe_model.products.keys()))
 
     @property
-    def kcal(self):
+    def kcal(self) -> int:
         return sum(product.kcal for product in self.products)

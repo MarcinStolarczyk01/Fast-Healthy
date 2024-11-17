@@ -9,8 +9,8 @@ class DietGenerator:
     STAGNATION_LIMIT = 1000
     TIME_LIMIT = 10
 
-    def __init__(self, recipes: tuple[Recipe], kcal_goal: int, meals_number: int):
-        self.recipes: tuple[Recipe] = recipes
+    def __init__(self, recipes: tuple[Recipe, ...], kcal_goal: int, meals_number: int):
+        self.recipes: tuple[Recipe, ...] = recipes
         self.kcal_goal: int = kcal_goal
         self.meals_number: int = meals_number
 
@@ -28,7 +28,7 @@ class DietGenerator:
         ):
             self._mutate(offspring)
 
-            offspring_kcal = sum(self.recipes[genome] for genome in offspring)
+            offspring_kcal = sum(self.recipes[genome].kcal for genome in offspring)
             offspring_kcal_gap = abs(self.kcal_goal - offspring_kcal)
 
             if offspring_kcal_gap >= ancestor_kcal_gap:
@@ -38,12 +38,15 @@ class DietGenerator:
                 ancestor_kcal_gap = offspring_kcal_gap
                 stagnation = 0
 
-        logging.info(
+        print(
             f"""
+            
         DietGenerator report
         --------------------
         Final kcal_gap:     {ancestor_kcal_gap}
         Execution time:     {time.time() - start}
+        Meals kcal:         {[self.recipes[genome].kcal for genome in ancestor]}
+        
         """
         )
 

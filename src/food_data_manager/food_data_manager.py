@@ -9,7 +9,6 @@ from concurrent.futures import ThreadPoolExecutor
 
 from src.exceptions.exceptions import (
     MissingAPIKeyError,
-    MissingNutrientError,
     FoodDatabaseConnectionError,
 )
 from src.models.product.product import Product
@@ -45,14 +44,15 @@ def _get_api_key(variable: str) -> str:
         )
 
 
-def _find_nutrient_value(nut_id: int, nutrients: list[ResponseNutrient]) -> float:
+def _find_nutrient_value(nut_id: int, nutrients: list[ResponseNutrient], product_name: str, default_value: float = 0.0) -> float:
     for nutrient in nutrients:
         if nutrient.nutrientId == nut_id:
             return nutrient.value
 
-    raise MissingNutrientError(
-        f"Nutrient under id: {nut_id} not present in search results"
+    logging.info(
+        f"Nutrient under id: {nut_id} not present in search results under name {product_name}. Assigning default value: {default_value}..."
     )
+    return default_value
 
 
 class FoodDataManager:
@@ -102,7 +102,7 @@ class FoodDataManager:
         found_product_name = food.description
         nutrients_section = food.foodNutrients
         nutrients = {
-            nutrient.name: _find_nutrient_value(nutrient.value, nutrients_section)
+            nutrient.name: _find_nutrient_value(nutrient.value, nutrients_section, found_product_name)
             for nutrient in WantedNutrientIDs
         }
         return Product(found_product_name, nutrients=nutrients)

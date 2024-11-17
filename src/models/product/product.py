@@ -20,7 +20,8 @@ class Product:
 
     @property
     def kcal(self) -> int:
-        return (
+
+        return round(
             MacroKcalMapping.FAT_KCAL * getattr(self, "fat")
             + MacroKcalMapping.PROTEIN_KCAL * getattr(self, "protein")
             + MacroKcalMapping.CARBOHYDRATES_KCAL * getattr(self, "carbohydrates")
