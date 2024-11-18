@@ -19,9 +19,9 @@ def test_placeholder():
 
     print(f"\n\nExecution time: {time.time() - start:.4f} seconds")
 
-    from src.dietitian.diet_generator.diet_generator import DietGenerator
-    diet_generator = DietGenerator(recipes=tuple(recipes),
+    from src.dietitian.diet_generator.diet_generator import DietScheduler
+    diet_generator = DietScheduler(recipes=tuple(recipes),
                                    kcal_goal=3000,
                                    meals_number=4)
 
-    _ = diet_generator.generate()
+    _ = diet_generator.schedule()
