@@ -1,11 +1,10 @@
-import logging
 import random
 import time
 
 from src.models.recipe.recipe import Recipe
 
 
-class DietGenerator:
+class DietScheduler:
     STAGNATION_LIMIT = 1000
     TIME_LIMIT = 10
 
@@ -14,7 +13,7 @@ class DietGenerator:
         self.kcal_goal: int = kcal_goal
         self.meals_number: int = meals_number
 
-    def generate(self, days: int = 1) -> tuple[tuple[Recipe, ...], ...]:
+    def schedule(self, days: int = 1) -> tuple[tuple[Recipe, ...], ...]:
         ancestor: list[int] = self._generate_random_chromosome()
         offspring: list[int] = [genome for genome in ancestor]
         ancestor_kcal_gap: int = abs(
@@ -52,10 +51,6 @@ class DietGenerator:
 
         return tuple([tuple([self.recipes[genome] for genome in ancestor])])
 
-    def _mutate(self, chromosome: list[int]) -> None:
-        genome_idx = random.randrange(self.meals_number)
-        genome = random.randrange(start=0, stop=len(self.recipes))
-        chromosome[genome_idx] = genome
 
     def _generate_random_chromosome(self) -> list[int]:
         if len(self.recipes) < 10:
@@ -64,3 +59,22 @@ class DietGenerator:
             random.randrange(start=0, stop=len(self.recipes))
             for _ in range(self.meals_number)
         ]
+
+
+    def _mutate(self, chromosome: list[int]) -> None:
+        genome_idx = random.randrange(self.meals_number)
+        genome = random.randrange(start=0, stop=len(self.recipes))
+        chromosome[genome_idx] = genome
+
+    @staticmethod
+    def _crossover(parent1, parent2, crossover_point) -> tuple[list[int], list[int]]:
+        parent1_prefix= parent1[:crossover_point]
+        parent1_suffix = parent1[crossover_point:]
+
+        parent2_prefix = parent2[:crossover_point]
+        parent2_suffix = parent2[crossover_point:]
+
+        offspring1 = parent1_prefix + parent2_suffix
+        offspring2 = parent2_prefix + parent1_suffix
+
+        return offspring1, offspring2
