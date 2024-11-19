@@ -3,8 +3,9 @@ from http import HTTPStatus
 from typing import Union, Literal
 
 from fastapi import FastAPI, HTTPException
-from pydantic import ValidationError, BaseModel
+from pydantic import ValidationError, BaseModel, Field
 
+from src.dietitian.dietitian import MacrosRatio
 from src.dietitian.dietitian import Dietitian
 from src.models.recipe.recipe import RecipeModel
 
@@ -64,6 +65,25 @@ def del_recipes(delete_request: DeleteRecipesModel):
         )
 
 
-@app.post("/config", status_code=201)
-def configure_dietitian():
-    raise NotImplemented
+class ConfigModel(BaseModel):
+    kcal_goal: int
+    meals_num: int
+    macros_ratio: MacrosRatio
+
+
+@app.post("/config", status_code=HTTPStatus.OK)
+def configure_dietitian(config: ConfigModel):
+    try:
+        dietitian.kcal_goal(config.kcal_goal).meals_num(config.meals_num).macros_ratio(
+            config.macros_ratio
+        )
+        return {"message": "Configured successfully"}
+    except (ValidationError, ValueError) as e:
+        raise HTTPException(
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY, detail=f"ValidationError: {e}"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail=f"Unexpected error: {e}",
+        )
