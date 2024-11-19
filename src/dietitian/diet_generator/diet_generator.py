@@ -51,7 +51,6 @@ class DietScheduler:
 
         return tuple([tuple([self.recipes[genome] for genome in ancestor])])
 
-
     def _generate_random_chromosome(self) -> list[int]:
         if len(self.recipes) < 10:
             raise ValueError("Not enough recipes. Provide at least 10 recipes.")
@@ -60,7 +59,6 @@ class DietScheduler:
             for _ in range(self.meals_number)
         ]
 
-
     def _mutate(self, chromosome: list[int]) -> None:
         genome_idx = random.randrange(self.meals_number)
         genome = random.randrange(start=0, stop=len(self.recipes))
@@ -68,7 +66,7 @@ class DietScheduler:
 
     @staticmethod
     def _crossover(parent1, parent2, crossover_point) -> tuple[list[int], list[int]]:
-        parent1_prefix= parent1[:crossover_point]
+        parent1_prefix = parent1[:crossover_point]
         parent1_suffix = parent1[crossover_point:]
 
         parent2_prefix = parent2[:crossover_point]

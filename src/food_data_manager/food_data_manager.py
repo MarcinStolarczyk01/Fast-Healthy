@@ -44,7 +44,12 @@ def _get_api_key(variable: str) -> str:
         )
 
 
-def _find_nutrient_value(nut_id: int, nutrients: list[ResponseNutrient], product_name: str, default_value: float = 0.0) -> float:
+def _find_nutrient_value(
+    nut_id: int,
+    nutrients: list[ResponseNutrient],
+    product_name: str,
+    default_value: float = 0.0,
+) -> float:
     for nutrient in nutrients:
         if nutrient.nutrientId == nut_id:
             return nutrient.value
@@ -102,7 +107,9 @@ class FoodDataManager:
         found_product_name = food.description
         nutrients_section = food.foodNutrients
         nutrients = {
-            nutrient.name: _find_nutrient_value(nutrient.value, nutrients_section, found_product_name)
+            nutrient.name: _find_nutrient_value(
+                nutrient.value, nutrients_section, found_product_name
+            )
             for nutrient in WantedNutrientIDs
         }
         return Product(found_product_name, nutrients=nutrients)

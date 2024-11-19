@@ -2,8 +2,9 @@ from __future__ import annotations
 from pydantic import BaseModel, model_validator
 import numpy as np
 
+from src.dietitian.diet_generator.diet_generator import DietScheduler
 from src.files_io_manager.files_io_manager import FilesIOManager, RecipesJsonModel
-from src.models.recipe.recipe import RecipeModel
+from src.models.recipe.recipe import RecipeModel, Recipe
 
 
 class MacrosRatio(BaseModel):
@@ -30,7 +31,7 @@ class MacrosRatio(BaseModel):
                 f"""Macros coefficients must sum to one. Current macros coefficients: protein : {self.protein}
                                                                                      fat : {self.fat}
                                                                                      carbohydrates : {self.carbohydrates}"""
-            )  # todo: custom exception like BadMacrosContentError
+            )  # todo: change thrown exception message and trace
         return self
 
 
@@ -38,8 +39,8 @@ class Dietitian:
     """Class implementing fluent interface pattern"""
 
     def __init__(self):
-        self._kcal_goal: int | None = 2000
-        self._meals_num: int | None = 4
+        self._kcal_goal: int = 2000
+        self._meals_num: int = 4
         self._macros_ratio: MacrosRatio = MacrosRatio(
             protein=0.25, fat=0.30, carbohydrates=0.45
         )
@@ -77,4 +78,9 @@ class Dietitian:
         FilesIOManager.drop_recipes(delete_request.recipes)
 
     def get_diet(self) -> None:  # pd.DataFrame:
-        raise NotImplementedError
+        recipes_model = FilesIOManager.get_recipes()
+        recipes = [Recipe(recipe_model) for recipe_model in recipes_model.recipes]
+        # diet_generator = DietScheduler(recipes)
+
+    def write_grocery_list(self):
+        pass
