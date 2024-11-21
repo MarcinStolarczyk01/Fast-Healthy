@@ -9,59 +9,72 @@ class DietScheduler:
     TIME_LIMIT = 10
 
     def __init__(self, recipes: tuple[Recipe, ...], kcal_goal: int, meals_number: int):
-        self.recipes: tuple[Recipe, ...] = recipes
+        self.recipes_left: tuple[Recipe, ...] = recipes
         self.kcal_goal: int = kcal_goal
         self.meals_number: int = meals_number
 
     def schedule(self, days: int = 1) -> tuple[tuple[Recipe, ...], ...]:
-        ancestor: list[int] = self._generate_random_chromosome()
-        offspring: list[int] = [genome for genome in ancestor]
-        ancestor_kcal_gap: int = abs(
-            self.kcal_goal - sum(self.recipes[genome].kcal for genome in ancestor)
-        )
+        schedule = []
+        for d in range(days):
+            ancestor: list[int] = self._generate_random_chromosome()
+            offspring: list[int] = [genome for genome in ancestor]
+            ancestor_kcal_gap: int = abs(
+                self.kcal_goal
+                - sum(self.recipes_left[genome].kcal for genome in ancestor)
+            )
 
-        stagnation = 0
-        start = time.time()
-        while (stagnation < self.STAGNATION_LIMIT) and (
-            time.time() - start < self.TIME_LIMIT
-        ):
-            self._mutate(offspring)
+            stagnation = 0
+            start = time.time()
+            while (stagnation < self.STAGNATION_LIMIT) and (
+                time.time() - start < self.TIME_LIMIT
+            ):
+                self._mutate(offspring)
 
-            offspring_kcal = sum(self.recipes[genome].kcal for genome in offspring)
-            offspring_kcal_gap = abs(self.kcal_goal - offspring_kcal)
+                offspring_kcal = sum(
+                    self.recipes_left[genome].kcal for genome in offspring
+                )
+                offspring_kcal_gap = abs(self.kcal_goal - offspring_kcal)
 
-            if offspring_kcal_gap >= ancestor_kcal_gap:
-                stagnation += 1
-            else:
-                ancestor = offspring
-                ancestor_kcal_gap = offspring_kcal_gap
-                stagnation = 0
+                if offspring_kcal_gap >= ancestor_kcal_gap:
+                    stagnation += 1
+                else:
+                    ancestor = offspring
+                    ancestor_kcal_gap = offspring_kcal_gap
+                    stagnation = 0
 
-        print(
-            f"""
+            print(
+                f"""
+                
+            DietGenerator report
+            --------------------
+            Day:                {d+1}
+            Final kcal_gap:     {ancestor_kcal_gap}
+            Execution time:     {time.time() - start}
+            Meals kcal:         {[self.recipes_left[genome].kcal for genome in ancestor]}
             
-        DietGenerator report
-        --------------------
-        Final kcal_gap:     {ancestor_kcal_gap}
-        Execution time:     {time.time() - start}
-        Meals kcal:         {[self.recipes[genome].kcal for genome in ancestor]}
-        
-        """
-        )
+            """
+            )
+            schedule.append(tuple([self.recipes_left[genome] for genome in ancestor]))
 
-        return tuple([tuple([self.recipes[genome] for genome in ancestor])])
+            # reduce recipes
+            updated_recipes = tuple(
+                recipe for recipe in self.recipes_left if recipe not in schedule
+            )
+            self.recipes_left = updated_recipes
+
+        return tuple(schedule)
 
     def _generate_random_chromosome(self) -> list[int]:
-        if len(self.recipes) < 10:
+        if len(self.recipes_left) < 10:
             raise ValueError("Not enough recipes. Provide at least 10 recipes.")
         return [
-            random.randrange(start=0, stop=len(self.recipes))
+            random.randrange(start=0, stop=len(self.recipes_left))
             for _ in range(self.meals_number)
         ]
 
     def _mutate(self, chromosome: list[int]) -> None:
         genome_idx = random.randrange(self.meals_number)
-        genome = random.randrange(start=0, stop=len(self.recipes))
+        genome = random.randrange(start=0, stop=len(self.recipes_left))
         chromosome[genome_idx] = genome
 
     @staticmethod
