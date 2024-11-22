@@ -40,11 +40,20 @@ To set up **Fast&Healthy**, follow those steps:
    ```bash
    pip install -r requirements.txt
    ```
-4. Run the API on the local host.
+4. Create an account on the USDA service to gain access to food nutrition data.\ 
+[Sign up for USDA FoodData Central](https://fdc.nal.usda.gov/api-key-signup).
+5. Export your FoodData Central API key as an environment variable.  
+Use the following script, replacing `_your_individual_api_key_` with your actual API key value: 
+   ```bash
+   export FD_CENTRAL_API_KEY=_your_individual_api_key_
+   ```
+   If your environment clears environmental variables after system shutdown you can add the line above to starting script. For Ubuntu it's usually _~/.bashrc_\
+   __Please ensure you provided the correct variable name.__
+6. Run the API on the local host.
    ```bash
    fastapi dev src/api.py
    ```
-5. Open API interactive documentation in your browser. The FastAPI runs at port 8000 by default.\
+7. Open API interactive documentation in your browser. The FastAPI runs at port 8000 by default.\
    Enter the site: [Fast&Healthy API docs](http://localhost:8000/docs)
 ## Running tests
 Confirm that the program is working correctly.
