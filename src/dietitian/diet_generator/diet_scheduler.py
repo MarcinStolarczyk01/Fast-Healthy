@@ -14,8 +14,12 @@ class DietScheduler:
         self.meals_number: int = meals_number
 
     def schedule(self, days: int = 1) -> tuple[tuple[Recipe, ...], ...]:
+        if len(self.recipes_left) < 10:
+            raise ValueError("Not enough recipes. Provide at least 10 recipes.")
+
         schedule = []
         for d in range(days):
+            print(f"\nRecipes for {d + 1} day: {len(self.recipes_left)}")
             ancestor: list[int] = self._generate_random_chromosome()
             offspring: list[int] = [genome for genome in ancestor]
             ancestor_kcal_gap: int = abs(
@@ -28,8 +32,10 @@ class DietScheduler:
             while (stagnation < self.STAGNATION_LIMIT) and (
                 time.time() - start < self.TIME_LIMIT
             ):
-                self._mutate(offspring)
+                if ancestor_kcal_gap == 0:
+                    break
 
+                self._mutate(offspring)
                 offspring_kcal = sum(
                     self.recipes_left[genome].kcal for genome in offspring
                 )
@@ -57,16 +63,18 @@ class DietScheduler:
             schedule.append(tuple([self.recipes_left[genome] for genome in ancestor]))
 
             # reduce recipes
+            used_recipes = []
+            for day_schedule in schedule:
+                used_recipes.extend(day_schedule)
             updated_recipes = tuple(
-                recipe for recipe in self.recipes_left if recipe not in schedule
+                recipe for recipe in self.recipes_left if recipe not in used_recipes
             )
             self.recipes_left = updated_recipes
+
 
         return tuple(schedule)
 
     def _generate_random_chromosome(self) -> list[int]:
-        if len(self.recipes_left) < 10:
-            raise ValueError("Not enough recipes. Provide at least 10 recipes.")
         return [
             random.randrange(start=0, stop=len(self.recipes_left))
             for _ in range(self.meals_number)

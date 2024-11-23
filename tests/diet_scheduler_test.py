@@ -7,8 +7,8 @@ import pytest
 from src.models.recipe.recipe import Recipe, RecipeModel
 from src.files_io_manager.files_io_manager import FilesIOManager
 
-# integration test
-pytest.mark.parametrize(
+
+@pytest.mark.parametrize(
     "sample_recipes_path",
     [
         Path(__file__).parent.joinpath(
@@ -16,9 +16,7 @@ pytest.mark.parametrize(
         )
     ],
 )
-
-
-def test_placeholder(sample_recipes_path, tmp_path: Path) -> None:
+def test_(sample_recipes_path, tmp_path: Path) -> None:
     recipes_content = json.load(open(sample_recipes_path))["recipes"]
 
     start = time.time()
@@ -32,10 +30,10 @@ def test_placeholder(sample_recipes_path, tmp_path: Path) -> None:
 
     print(f"\n\nExecution time: {time.time() - start} seconds")
 
-    from src.dietitian.diet_generator.diet_generator import DietScheduler
+    from src.dietitian.diet_generator.diet_scheduler import DietScheduler
 
     diet_generator = DietScheduler(
         recipes=tuple(recipes), kcal_goal=3000, meals_number=4
     )
 
-    _ = diet_generator.schedule()
+    _ = diet_generator.schedule(days=3)
