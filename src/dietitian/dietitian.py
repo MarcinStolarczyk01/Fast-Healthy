@@ -2,7 +2,7 @@ from __future__ import annotations
 from pydantic import BaseModel, model_validator
 import numpy as np
 
-from src.dietitian.diet_generator.diet_generator import DietScheduler
+from src.dietitian.diet_generator.diet_scheduler import DietScheduler
 from src.files_io_manager.files_io_manager import FilesIOManager, RecipesJsonModel
 from src.models.recipe.recipe import RecipeModel, Recipe
 

@@ -3,7 +3,7 @@ from http import HTTPStatus
 from typing import Union, Literal
 
 from fastapi import FastAPI, HTTPException
-from pydantic import ValidationError, BaseModel, Field
+from pydantic import ValidationError, BaseModel
 
 from src.dietitian.dietitian import MacrosRatio
 from src.dietitian.dietitian import Dietitian
